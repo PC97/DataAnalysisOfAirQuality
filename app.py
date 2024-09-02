@@ -157,7 +157,7 @@ grouped_data['Category_Order'] = grouped_data['Category'].map(category_order_map
 grouped_data = grouped_data.sort_values(by=['Category_Order', 'wd'])
 
 # Create a colormap with varying shades of a single color (e.g., blue)
-color_scale = pc.sequential.Blues
+# color_scale = pd.sequential.Blues
 
 # Create polar bar chart
 fig = go.Figure()
@@ -166,14 +166,14 @@ categories = custom_category_order
 
 for i, category in enumerate(categories):
     category_data = grouped_data[grouped_data['Category'] == category]
-    color = color_scale[i]  # Get a shade of blue from the colormap
+    # color = color_scale[i]  # Get a shade of blue from the colormap
     fig.add_trace(go.Barpolar(
         r=category_data['count'],
         theta=category_data['wd'],
         name=category,
         text=category_data['count'],
         hoverinfo='text',
-        marker=dict(color=color)
+        # marker=dict(color=color)
     ))
 
 fig.update_layout(
