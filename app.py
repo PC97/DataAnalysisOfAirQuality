@@ -4,6 +4,20 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.colors as PC
 
+# # Set a light theme
+# st.set_page_config(
+#     page_title="Air Quality Dashboard",
+#     layout="wide",
+#     initial_sidebar_state="expanded",
+#     theme={
+#         'primaryColor': '#1a73e8',
+#         'backgroundColor': '#ffffff',
+#         'secondaryBackgroundColor': '#f0f2f6',
+#         'textColor': '#000000',
+#         'font': 'sans serif'
+#     }
+# )
+
 url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXFKefF7-wy_GWu-tWyI9BFW_HYNB16mGO5yCkQ57I_JraswJO6LHmXEpMjE4myWB_nH2bPP--sQwm/pub?gid=0&single=true&output=csv'
 data = pd.read_csv(url)
 data['datetime'] = pd.to_datetime(data['datetime'])
@@ -134,14 +148,17 @@ st.plotly_chart(fig_scatter)
 pivot_data = filtered_data.pivot_table(index='station', columns='Category', values='PM2.5', aggfunc='count', fill_value=0)
 
 # Create a stacked bar chart
-fig = px.bar(pivot_data, x=pivot_data.index, y=custom_category_order, title='Air Quality by Station',
-             labels={'station': 'Station', 'value': 'Count', 'variable': 'Category'},
-             color_discrete_sequence=px.colors.qualitative.Set3)
-fig.update_layout(barmode='stack')
+try:
+    fig = px.bar(pivot_data, x=pivot_data.index, y=custom_category_order, title='Air Quality by Station',
+                 labels={'station': 'Station', 'value': 'Count', 'variable': 'Category'},
+                 color_discrete_sequence=px.colors.qualitative.Set3)
+    fig.update_layout(barmode='stack')
 
-# Display the chart in Streamlit
-st.plotly_chart(fig)
-
+    # Display the chart in Streamlit
+    st.plotly_chart(fig)
+except Exception as e:
+    # st.error(f"An error occurred while creating the stacked bar chart: {e}")
+    pass
 
 # Map categories to a numerical order based on the custom order
 category_order_mapping = {category: i for i, category in enumerate(custom_category_order)}
@@ -185,3 +202,11 @@ fig.update_layout(
 
 # Display the chart in Streamlit
 st.plotly_chart(fig)
+
+# Display Data Columns and Top 10 Rows
+st.header("Data Used for Visualization")
+st.write("### Data Columns:")
+st.write(list(filtered_data.columns))
+
+st.write("### Top 10 Data Rows:")
+st.write(filtered_data.head(10))
